@@ -1,8 +1,7 @@
 import time
 import pickle
-from zipfile import ZipFile
 
-from .gamedata import GameData
+from .gamedata import GameData, RuWordList, str_to_bytes, bytes_to_str
 
 GAME_COUNT_LIMIT = 64
 
@@ -25,7 +24,7 @@ class Game:
 		self.wordtop = gamedata.wordtop
 		self.closest_top = gamedata.closest_top
 	def word_to_place(self, word):
-		return self.wordtop[worddict[word]]
+		return self.wordtop[worddict[str_to_bytes(word)]]
 	def place_to_word(self, place):
 		if place <= self.closest_top_size:
 			return wordlist[self.closest_top[place]]
@@ -48,10 +47,8 @@ class GameDict:
 				print(f'Освобождена память из-под игры {agest}')
 		return self.loaded_games[gamename]
 
-with ZipFile('api/wordlist.zip', 'r') as zipfile:
-	with zipfile.open('wordlist.pickle', 'r') as f:
-		wordlist = pickle.load(f)
+with open('wordlist.pickle', 'rb') as f:
+	wordlist = pickle.load(f)
 
-worddict = {wordlist[i]: i for i in range(len(wordlist))}
-
+worddict = {wordlist.words_bytes[i]: i for i in range(len(wordlist.words_bytes))}
 games = GameDict()
