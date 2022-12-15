@@ -44,5 +44,5 @@ class GameData:
 		self.bits_per_word = math.log2(len(wordtop)).__ceil__()
 		self.wordtop = Bitset(wordtop, self.bits_per_word)
 		self.closest_top = Bitset([
-			pair[1] for pair in sorted([(wordtop[word], word) for word in range(len(wordtop))]) if wordtop[word] < closest_top_size
+			pair[1] for pair in sorted([(wordtop[word], word) for word in range(len(wordtop)) if wordtop[word] < closest_top_size])
 		], self.bits_per_word, -1)

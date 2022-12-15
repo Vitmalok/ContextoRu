@@ -2,7 +2,7 @@ import time
 import pickle
 from zipfile import ZipFile
 
-from .gameclass import GameData
+from .gamedata import GameData
 
 GAME_COUNT_LIMIT = 64
 
@@ -28,25 +28,30 @@ class Game:
 		return self.wordtop[worddict[word]]
 	def place_to_word(self, place):
 		if place <= self.closest_top_size:
-			return self.wordlist[self.closest_top[place]]
+			return wordlist[self.closest_top[place]]
 		print(f'Попытка получить подсказку по слову с номером {place}, хотя предусмотрено только {self.closest_top_size}')
 	def get_closest_top(self, size):
 		if size <= self.closest_top_size:
 			return list(self.closest_top)
 		print(f'Попытка получить топ {size} ближайших слов, хотя предусмотрено только {self.closest_top_size}')
 
-def load_game(name):
-	with open(f'games/{name}.pickle', 'rb') as f:
-		gamedata = pickle.load(f)
-	loaded_games[name] = Game(gamedata)
-	if len(loaded_games) > GAME_COUNT_LIMIT:
-		loaded_games.pop(agest := loaded_games.get_agest())
-		print(f'Освобождена память из-под игры {agest}')
-
-loaded_games = TimeDict()
+class GameDict:
+	def __init__(self):
+		self.loaded_games = TimeDict()
+	def __getitem__(self, gamename):
+		if gamename not in self.loaded_games:
+			with open(f'games/{gamename}.pickle', 'rb') as f:
+				gamedata = pickle.load(f)
+			self.loaded_games[gamename] = Game(gamedata)
+			if len(self.loaded_games) > GAME_COUNT_LIMIT:
+				self.loaded_games.pop(agest := self.loaded_games.get_agest())
+				print(f'Освобождена память из-под игры {agest}')
+		return self.loaded_games[gamename]
 
 with ZipFile('api/wordlist.zip', 'r') as zipfile:
-	with zipfile.open('wordlist.pickle', 'rb') as f:
+	with zipfile.open('wordlist.pickle', 'r') as f:
 		wordlist = pickle.load(f)
 
-worddict = {word: i for i in range(len(wordlist))}
+worddict = {wordlist[i]: i for i in range(len(wordlist))}
+
+games = GameDict()

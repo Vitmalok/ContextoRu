@@ -1,3 +1,5 @@
+const game = 'test3';
+
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
 	function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
 	return new (P || (P = Promise))(function (resolve, reject) {
@@ -101,13 +103,16 @@ input.addEventListener('keypress', function (event) { return __awaiter(_this, vo
 		switch (_a.label) {
 			case 0:
 				if (!(event.key === 'Enter')) return [3 /*break*/, 2];
-				return [4 /*yield*/, fetch('http://localhost:8000/check_guess', {
+				return [4 /*yield*/, fetch('/check_guess', {
 						method: "POST",
 						headers: {
 							'Accept': 'application/json',
 							'Content-Type': 'application/json'
 						},
-						body: JSON.stringify({ word: input.value })
+						body: JSON.stringify({
+							game: game,
+							word: input.value
+						})
 					})
 						.then(function (response) { return response.json(); })
 						.then(function (data) {
@@ -153,13 +158,16 @@ document.querySelector(".tip").addEventListener('click', function (event) { retu
 					if (i == arr.length)
 						num = arr[arr.length - 1][0] + 1;
 				}
-				return [4 /*yield*/, fetch('http://localhost:8000/hint', {
+				return [4 /*yield*/, fetch('/hint', {
 						method: "POST",
 						headers: {
 							'Accept': 'application/json',
 							'Content-Type': 'application/json'
 						},
-						body: JSON.stringify({ number: num })
+						body: JSON.stringify({
+							game: game,
+							number: num
+						})
 					})
 						.then(function (response) { return response.json(); })
 						.then(function (data) {
