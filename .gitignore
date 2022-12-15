@@ -1,5 +1,5 @@
 .git
 __pycache__
 games
-helper
-wordlist
+helper.py
+wordlist.zip
