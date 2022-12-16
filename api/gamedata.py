@@ -57,7 +57,7 @@ def str_to_bytes(str_):
 	return bytes([int(bits[i:i + 8], 2) for i in range(0, len(bits), 8)])
 def bytes_to_str(bytes_):
 	bits = ''.join([smart_bin(byte, 8) for byte in bytes_])
-	bits = bits[3:-((-int(bits[:3], 2) - 3)%8)]
+	bits = bits[3:len(bits)-((-int(bits[:3], 2) - 3)%8)]
 	return ''.join([INT_TO_CHAR[int(bits[i:i + BITS_PER_CHAR], 2)] for i in range(0, len(bits), BITS_PER_CHAR)])
 
 class RuWordList:
