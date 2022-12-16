@@ -11,11 +11,11 @@ def generate(secret_word, model_type='int'):
 		from gensim.models import KeyedVectors
 		print('Импортированы KeyedVectors')
 	if model_type == 'str' and 'model_str' not in globals():
-		model = KeyedVectors.load_word2vec_format('all.norm-sz500-w10-cb0-it3-min5-cleared-bin.w2v', binary=True)
+		model_str = KeyedVectors.load_word2vec_format('all.norm-sz500-w10-cb0-it3-min5-cleared-bin.w2v', binary=True)
 		print('Загружена модель')
 	if model_type == 'int' and 'model_int' not in globals():
 		with open('model.pickle', 'rb') as f:
-			model = pickle.load(f)
+			model_int = pickle.load(f)
 		print('Загружена модель')
 	if 'wordlist' not in globals():
 		with open('wordlist.pickle', 'rb') as f:
@@ -25,8 +25,12 @@ def generate(secret_word, model_type='int'):
 		worddict = {wordlist.words_bytes[i]: i for i in range(len(wordlist))}
 		print('Построена хеш-таблица индексов слов')
 	
+	if not secret_word:
+		print('Введено пустое слово. Генерация игры отменена')
+		return
+	
 	if model_type == 'str':
-		wordtop = model.most_similar(secret_word, topn=len(wordlist))
+		wordtop = model_str.most_similar(secret_word, topn=len(wordlist))
 		print('Построен топ most_similar')
 		top = [None]*len(wordlist)
 		top[worddict[str_to_bytes(secret_word)]] = 1
@@ -35,7 +39,7 @@ def generate(secret_word, model_type='int'):
 		print('Топ преобразован')
 	elif model_type == 'int':
 		secret_index = worddict[str_to_bytes(secret_word)]
-		wordtop = model.most_similar(secret_index, topn=len(wordlist))
+		wordtop = model_int.most_similar(secret_index, topn=len(wordlist))
 		print('Построен топ most_similar')
 		top = [None]*len(wordlist)
 		top[secret_index] = 1
@@ -57,6 +61,8 @@ if __name__ == '__main__':
 	while True:
 		print('Введите загаданное слово')
 		gamedata = generate(secret_word := input(' >> '))
+		if gamedata is None:
+			continue
 		print('Введите имя игры')
 		save(gamedata, gamename := input(' >> '))
 		print(f'Сохранено в games/{gamename}.pickle')
