@@ -63,5 +63,7 @@ def bytes_to_str(bytes_):
 class RuWordList:
 	def __init__(self, wordlist):
 		self.words_bytes = [str_to_bytes(word) for word in wordlist]
+	def __len__(self):
+		return len(self.words_bytes)
 	def __getitem__(self, index):
 		return bytes_to_str(self.words_bytes[index])

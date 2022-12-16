@@ -23,5 +23,5 @@ def f3():
 	word = api.games[json['game']].place_to_word(json['number'])
 	return {'word': '<error>'} if word is None else {'word': word}
 
-app.run()
+app.run(debug=False, host='0.0.0.0', port='8080')
 
