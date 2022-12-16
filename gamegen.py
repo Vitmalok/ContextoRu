@@ -28,7 +28,8 @@ def generate(secret_word, model_type='int'):
 	if model_type == 'str':
 		wordtop = model.most_similar(secret_word, topn=len(wordlist))
 		print('Построен топ most_similar')
-		top = {worddict[str_to_bytes(secret_word)]: 1}
+		top = [None]*len(wordlist)
+		top[worddict[str_to_bytes(secret_word)]] = 1
 		for place in range(len(wordtop)):
 			top[worddict[str_to_bytes(wordtop[place][0])]] = place + 2
 		print('Топ преобразован')
